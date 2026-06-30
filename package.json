@@ -1,0 +1,11 @@
+{
+  "name": "github-copilot-python-udacity",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test:js": "vitest"
+  },
+  "devDependencies": {
+    "vitest": "^1.0.0"
+  }
+}
