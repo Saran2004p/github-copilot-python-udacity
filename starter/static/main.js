@@ -12,7 +12,12 @@ function createBoardElement() {
       const input = document.createElement('input');
       input.type = 'text';
       input.maxLength = 1;
-      input.className = 'sudoku-cell';
+      // compute 3x3 block parity for alternating backgrounds
+      const blockRow = Math.floor(i / 3);
+      const blockCol = Math.floor(j / 3);
+      const isEvenBlock = ((blockRow + blockCol) % 2) === 0;
+      input.classList.add('sudoku-cell');
+      input.classList.add(isEvenBlock ? 'block-even' : 'block-odd');
       input.dataset.row = i;
       input.dataset.col = j;
       input.addEventListener('input', (e) => {
@@ -35,10 +40,14 @@ function renderPuzzle(puz) {
       const idx = i * SIZE + j;
       const val = puzzle[i][j];
       const inp = inputs[idx];
+      // reset state but preserve block classes
+      inp.classList.remove('incorrect');
+      inp.classList.remove('prefilled');
+
       if (val !== 0) {
         inp.value = val;
         inp.disabled = true;
-        inp.className += ' prefilled';
+        inp.classList.add('prefilled');
       } else {
         inp.value = '';
         inp.disabled = false;
@@ -82,9 +91,10 @@ async function checkSolution() {
   for (let idx = 0; idx < inputs.length; idx++) {
     const inp = inputs[idx];
     if (inp.disabled) continue;
-    inp.className = 'sudoku-cell';
+    // clear incorrect marker
+    inp.classList.remove('incorrect');
     if (incorrect.has(idx)) {
-      inp.className = 'sudoku-cell incorrect';
+      inp.classList.add('incorrect');
     }
   }
   if (incorrect.size === 0) {
